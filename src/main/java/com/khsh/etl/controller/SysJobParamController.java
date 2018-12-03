@@ -1,25 +1,30 @@
 package com.khsh.etl.controller;
 
+import com.ejet.comm.PageBean;
+import com.ejet.comm.Param;
+import com.ejet.comm.Result;
+import com.ejet.comm.base.CoBaseController;
 import com.ejet.comm.exception.CoBusinessException;
 import com.khsh.etl.model.SysJobParamModel;
+import com.khsh.etl.service.impl.SysJobParamServiceImpl;
+import com.khsh.etl.vo.SysJobParamKettleVO;
+import com.khsh.etl.vo.SysJobParamVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.fastjson.TypeReference;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import com.ejet.comm.Result;
-import com.ejet.comm.Param;
-import com.ejet.comm.PageBean;
-import com.ejet.comm.base.CoBaseController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 import static com.ejet.comm.exception.ExceptionCode.SYS_ERROR;
-import com.khsh.etl.vo.SysJobParamVO;
-import com.khsh.etl.service.impl.SysJobParamServiceImpl;
+
 @RestController
 @RequestMapping(value="/sys-job-param")
-public class SysJobParamController extends CoBaseController { 
+public class SysJobParamController extends CoBaseController {
 
 	private final Logger log = LoggerFactory.getLogger(SysJobParamController.class);
 	@Autowired
@@ -28,7 +33,7 @@ public class SysJobParamController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/query")
-	public Result query(@RequestBody(required=false)SysJobParamVO model) {
+	public Result query(@RequestBody(required=false) SysJobParamVO model) {
 		Result rs = new Result();
 		try {
 			List<SysJobParamModel> page = mService.queryByCond(model);
@@ -41,9 +46,23 @@ public class SysJobParamController extends CoBaseController {
 	}
 
 
+    @ResponseBody
+    @RequestMapping(value="/find-by-pk")
+    public Result findByPK(@RequestBody(required=false) SysJobParamVO model) {
+        Result rs = new Result();
+        try {
+            SysJobParamModel result = mService.findByPK(model);
+            rs = new Result(result);
+        }catch (CoBusinessException e) {
+            log.error("", e);
+            rs = new Result(e.getCode(), e);
+        }
+        return rs;
+    }
+
 	@ResponseBody
 	@RequestMapping(value="/delete")
-	public Result delete(@RequestBody(required=true)SysJobParamVO model) {
+	public Result delete(@RequestBody(required=true) SysJobParamVO model) {
 		Result rs = new Result();
 		try{
 			mService.delete(model);
@@ -57,7 +76,7 @@ public class SysJobParamController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/add")
-	public Result add(@RequestBody(required=true)SysJobParamVO model) {
+	public Result add(@RequestBody(required=true) SysJobParamVO model) {
 		Result rs = new Result();
 		try{
 			mService.insertSingle(model);
@@ -71,7 +90,7 @@ public class SysJobParamController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/update")
-	public Result update(@RequestBody(required=true)SysJobParamVO model) {
+	public Result update(@RequestBody(required=true) SysJobParamVO model) {
 		Result rs = new Result();
 		try{
 			mService.update(model);
@@ -85,11 +104,12 @@ public class SysJobParamController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/query-by-page")
-	public Result queryByPage(@RequestBody(required=true)Param param, BindingResult bindResult) {
+	public Result queryByPage(@RequestBody(required=true) Param<SysJobParamVO> param, BindingResult bindResult) {
 		Result rs = new Result();
 		try{
 			checkBindResult(bindResult);
-			SysJobParamVO model = toBean(param, new TypeReference<SysJobParamVO>(){});
+			checkParam(param);
+			SysJobParamVO model = param.getData();
 			PageBean<SysJobParamModel> pageBean = mService.queryByPage(model, param.getPage().getPageNum(), param.getPage().getPageSize());
 			rs = new Result(pageBean.getPage(), pageBean.getResult());
 		}catch (CoBusinessException e) {
@@ -101,6 +121,68 @@ public class SysJobParamController extends CoBaseController {
 		}
 		return rs;
 	}
+
+
+    @ResponseBody
+    @RequestMapping(value="/add-kettle")
+    public Result addKettle(@RequestBody(required=true) SysJobParamVO model) {
+        Result rs = new Result();
+        try{
+            mService.addKettle(model);
+        }catch (CoBusinessException e) {
+            log.error("", e);
+            rs = new Result(e.getCode(), e);
+        }
+        return rs;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/update-kettle")
+    public Result updateKettle(@RequestBody(required=true) SysJobParamVO model) {
+        Result rs = new Result();
+        try{
+            mService.updateKettle(model);
+        }catch (CoBusinessException e) {
+            log.error("", e);
+            rs = new Result(e.getCode(), e);
+        }
+        return rs;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/query-kettle-by-page")
+    public Result queryKettleByPage(@RequestBody(required=true) Param<SysJobParamKettleVO> param, BindingResult bindResult) {
+        Result rs = new Result();
+        try{
+            checkBindResult(bindResult);
+            checkParam(param);
+            SysJobParamKettleVO model = param.getData();
+            PageBean<SysJobParamKettleVO> pageBean = mService.queryKettleByPage(model, param.getPage().getPageNum(), param.getPage().getPageSize());
+            rs = new Result(pageBean.getPage(), pageBean.getResult());
+        }catch (CoBusinessException e) {
+            log.error("", e);
+            rs = new Result(e.getCode(), e);
+        }catch (Exception e) {
+            log.error("", e);
+            rs = new Result(SYS_ERROR, e);
+        }
+        return rs;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value="/find-kettle-by-pk")
+    public Result findKettleByPK(@RequestBody(required=false) SysJobParamKettleVO model) {
+        Result rs = new Result();
+        try {
+            SysJobParamKettleVO result = mService.findKettleByPK(model);
+            rs = new Result(result);
+        }catch (CoBusinessException e) {
+            log.error("", e);
+            rs = new Result(e.getCode(), e);
+        }
+        return rs;
+    }
 
 
 }

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.khsh.etl.mapper.EtlKettleDatabaseDao">
+
+	<sql id="SqlWhere">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+			<if test="uuid!=null and uuid!='' ">and uuid=#{uuid} </if>
+			<if test="name!=null and name!='' ">and name like CONCAT('%', #{name}, '%') </if>
+			<if test="dbType!=null and dbType!='' ">and db_type=#{dbType} </if>
+			<if test="dbAccess!=null and dbAccess!='' ">and db_access=#{dbAccess} </if>
+			<if test="dbHost!=null and dbHost!='' ">and db_host=#{dbHost} </if>
+			<if test="dbPort!=null ">and db_port=#{dbPort} </if>
+			<if test="dbDatabase!=null and dbDatabase!='' ">and db_database like CONCAT('%', #{dbDatabase}, '%') </if>
+			<if test="dbUsername!=null and dbUsername!='' ">and db_username=#{dbUsername} </if>
+			<if test="dbPassword!=null and dbPassword!='' ">and db_password=#{dbPassword} </if>
+			<if test="dbRepositoryId!=null and dbRepositoryId!='' ">and db_repository_id=#{dbRepositoryId} </if>
+			<if test="dbDescription!=null and dbDescription!='' ">and db_description=#{dbDescription} </if>
+			<if test="dbParam!=null and dbParam!='' ">and db_param=#{dbParam} </if>
+			<if test="status!=null and status!='' ">and status=#{status} </if>
+			<if test="remark!=null and remark!='' ">and remark=#{remark} </if>
+			<if test="modifyTime!=null and modifyTime!='' ">and modify_time=#{modifyTime} </if>
+			<if test="modifyUser!=null and modifyUser!='' ">and modify_user=#{modifyUser} </if>
+			<if test="ext!=null and ext!='' ">and ext=#{ext} </if>
+			<if test="ext1!=null and ext1!='' ">and ext1=#{ext1} </if>
+			<if test="ext2!=null and ext2!='' ">and ext2=#{ext2} </if>
+		</where>
+	</sql>
+	<sql id="SqlWherePK">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+		</where>
+	</sql>
+	<sql id="SqlSet">
+		<set>
+			<if test="id!=null "> id=#{id}, </if>
+			<if test="uuid!=null and uuid!='' "> uuid=#{uuid}, </if>
+			<if test="name!=null and name!='' "> name=#{name}, </if>
+			<if test="dbType!=null and dbType!='' "> db_type=#{dbType}, </if>
+			<if test="dbAccess!=null and dbAccess!='' "> db_access=#{dbAccess}, </if>
+			<if test="dbHost!=null and dbHost!='' "> db_host=#{dbHost}, </if>
+			<if test="dbPort!=null "> db_port=#{dbPort}, </if>
+			<if test="dbDatabase!=null and dbDatabase!='' "> db_database=#{dbDatabase}, </if>
+			<if test="dbUsername!=null and dbUsername!='' "> db_username=#{dbUsername}, </if>
+			<if test="dbPassword!=null and dbPassword!='' "> db_password=#{dbPassword}, </if>
+			<if test="dbRepositoryId!=null and dbRepositoryId!='' "> db_repository_id=#{dbRepositoryId}, </if>
+			<if test="dbDescription!=null and dbDescription!='' "> db_description=#{dbDescription}, </if>
+			<if test="dbParam!=null and dbParam!='' "> db_param=#{dbParam}, </if>
+			<if test="status!=null and status!='' "> status=#{status}, </if>
+			<if test="remark!=null and remark!='' "> remark=#{remark}, </if>
+			<if test="modifyTime!=null and modifyTime!='' "> modify_time=#{modifyTime}, </if>
+			<if test="modifyUser!=null and modifyUser!='' "> modify_user=#{modifyUser}, </if>
+			<if test="ext!=null and ext!='' "> ext=#{ext}, </if>
+			<if test="ext1!=null and ext1!='' "> ext1=#{ext1}, </if>
+			<if test="ext2!=null and ext2!='' "> ext2=#{ext2}, </if>
+		</set>
+	</sql>
+
+
+	<insert  id="insertAutoKey" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO etl_kettle_database (
+ 			uuid, name, db_type, db_access, 
+ 			db_host, db_port, db_database, db_username, db_password, 
+ 			db_repository_id, db_description, db_param, status, remark, 
+ 			modify_time, modify_user, ext, ext1, ext2 ) 
+ 				 VALUES ( 
+ 			#{uuid}, #{name}, #{dbType}, #{dbAccess}, 
+ 			#{dbHost}, #{dbPort}, #{dbDatabase}, #{dbUsername}, #{dbPassword}, 
+ 			#{dbRepositoryId}, #{dbDescription}, #{dbParam}, #{status}, #{remark}, 
+ 			#{modifyTime}, #{modifyUser}, #{ext}, #{ext1}, #{ext2} ) 
+ 			
+	</insert>
+
+	<insert  id="insertSingle" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO etl_kettle_database (
+ 			uuid, name, db_type, db_access, 
+ 			db_host, db_port, db_database, db_username, db_password, 
+ 			db_repository_id, db_description, db_param, status, remark, 
+ 			modify_time, modify_user, ext, ext1, ext2, 
+ 			 id ) 
+		 VALUES( 
+ 			#{uuid}, #{name}, #{dbType}, #{dbAccess}, 
+ 			#{dbHost}, #{dbPort}, #{dbDatabase}, #{dbUsername}, #{dbPassword}, 
+ 			#{dbRepositoryId}, #{dbDescription}, #{dbParam}, #{status}, #{remark}, 
+ 			#{modifyTime}, #{modifyUser}, #{ext}, #{ext1}, #{ext2}, 
+ 			 #{id} ) 
+	</insert>
+
+	<delete  id="delete" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" >
+		 DELETE FROM etl_kettle_database
+		 <include refid="SqlWhere"></include> 
+	</delete>
+
+	<update  id="update" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" >
+		 UPDATE etl_kettle_database
+		 <include refid="SqlSet"></include> 
+		 <include refid="SqlWherePK"></include> 
+	</update>
+
+	<select  id="findByPK" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" resultType="com.khsh.etl.model.EtlKettleDatabaseModel" >
+		 SELECT * FROM etl_kettle_database
+		 <include refid="SqlWherePK"></include>
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if> 
+	</select>
+
+	<select  id="queryByCond" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" resultType="com.khsh.etl.model.EtlKettleDatabaseModel" >
+		 SELECT * FROM etl_kettle_database
+		 <include refid="SqlWhere"></include> 
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if> 
+	</select>
+
+	<select  id="queryByPage" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" resultType="com.khsh.etl.model.EtlKettleDatabaseModel" >
+		 SELECT * FROM etl_kettle_database
+		 <include refid="SqlWhere"></include> 
+		 <if test="extSQL!=null "> ${extSQL} </if> 
+	</select>
+
+	<select  id="findMaxId" parameterType="com.khsh.etl.model.EtlKettleDatabaseModel" resultType="int" >
+		 SELECT max(id) FROM etl_kettle_database
+		 <include refid="SqlWhere"></include> 
+	</select>
+
+</mapper>

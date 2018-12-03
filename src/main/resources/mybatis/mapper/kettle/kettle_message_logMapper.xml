@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.khsh.etl.mapper.KettleMessageLogDao">
+
+    <sql id="SqlWhere">
+        <where>
+            1=1
+            <if test="id!=null ">and id=#{id}</if>
+            <if test="uuid!=null and uuid!='' ">and uuid=#{uuid}</if>
+            <if test="jobId!=null and jobId!='' ">and job_id=#{jobId}</if>
+            <if test="jobName!=null and jobName!='' ">and job_name=#{jobName}</if>
+            <if test="ktlJobUuid!=null and ktlJobUuid!='' ">and ktl_job_uuid=#{ktlJobUuid}</if>
+            <if test="ktlJobName!=null and ktlJobName!='' ">and ktl_job_name=#{ktlJobName}</if>
+            <if test="ktlJobType!=null and ktlJobType!='' ">and ktl_job_type=#{ktlJobType}</if>
+            <if test="logChannelId!=null and logChannelId!='' ">and log_channel_id=#{logChannelId}</if>
+            <if test="logBatchId!=null ">and log_batch_id=#{logBatchId}</if>
+            <if test="seqNr!=null ">and seq_nr=#{seqNr}</if>
+            <if test="transName!=null and transName!='' ">and trans_name=#{transName}</if>
+            <if test="errors!=null and errors!='' ">and errors=#{errors}</if>
+            <if test="inputBufferRows!=null and inputBufferRows!='' ">and input_buffer_rows=#{inputBufferRows}</if>
+            <if test="outputBufferRows!=null and outputBufferRows!='' ">and output_buffer_rows=#{outputBufferRows}</if>
+            <if test="nrLinesDeleted!=null and nrLinesDeleted!='' ">and nr_lines_deleted=#{nrLinesDeleted}</if>
+            <if test="nrLinesInput!=null and nrLinesInput!='' ">and nr_lines_input=#{nrLinesInput}</if>
+            <if test="nrLinesOutput!=null and nrLinesOutput!='' ">and nr_lines_output=#{nrLinesOutput}</if>
+            <if test="nrLinesRead!=null and nrLinesRead!='' ">and nr_lines_read=#{nrLinesRead}</if>
+            <if test="nrLinesRejected!=null and nrLinesRejected!='' ">and nr_lines_rejected=#{nrLinesRejected}</if>
+            <if test="nrLinesUpdated!=null and nrLinesUpdated!='' ">and nr_lines_updated=#{nrLinesUpdated}</if>
+            <if test="nrLinesWritten!=null and nrLinesWritten!='' ">and nr_lines_written=#{nrLinesWritten}</if>
+            <if test="startdate!=null and startdate!='' ">and startdate=#{startdate}</if>
+            <if test="enddate!=null and enddate!='' ">and enddate=#{enddate}</if>
+            <if test="logdate!=null and logdate!='' ">and logdate=#{logdate}</if>
+            <if test="depdate!=null and depdate!='' ">and depdate=#{depdate}</if>
+            <if test="replaydate!=null and replaydate!='' ">and replaydate=#{replaydate}</if>
+            <if test="executingServer!=null and executingServer!='' ">and executing_server=#{executingServer}</if>
+            <if test="executingUser!=null and executingUser!='' ">and executing_user=#{executingUser}</if>
+            <if test="client!=null and client!='' ">and client=#{client}</if>
+            <if test="createDay!=null and createDay!='' ">and create_day=#{createDay}</if>
+            <if test="modifyTime!=null and modifyTime!='' ">and modify_time=#{modifyTime}</if>
+            <if test="logField!=null and logField!='' ">and log_field=#{logField}</if>
+            <if test="resultFilesList!=null and resultFilesList!='' ">and result_files_list=#{resultFilesList}</if>
+            <if test="logText!=null and logText!='' ">and log_text=#{logText}</if>
+        </where>
+    </sql>
+    <sql id="SqlWherePK">
+        <where>
+            1=1
+            <if test="id!=null ">and id=#{id}</if>
+        </where>
+    </sql>
+    <sql id="SqlSet">
+        <set>
+            <if test="id!=null ">id=#{id},</if>
+            <if test="uuid!=null and uuid!='' ">uuid=#{uuid},</if>
+            <if test="jobId!=null and jobId!='' ">job_id=#{jobId},</if>
+            <if test="jobName!=null and jobName!='' ">job_name=#{jobName},</if>
+            <if test="ktlJobUuid!=null and ktlJobUuid!='' ">ktl_job_uuid=#{ktlJobUuid},</if>
+            <if test="ktlJobName!=null and ktlJobName!='' ">ktl_job_name=#{ktlJobName},</if>
+            <if test="ktlJobType!=null and ktlJobType!='' ">ktl_job_type=#{ktlJobType},</if>
+            <if test="logChannelId!=null and logChannelId!='' ">log_channel_id=#{logChannelId},</if>
+            <if test="logBatchId!=null ">log_batch_id=#{logBatchId},</if>
+            <if test="seqNr!=null ">seq_nr=#{seqNr},</if>
+            <if test="transName!=null and transName!='' ">trans_name=#{transName},</if>
+            <if test="errors!=null and errors!='' ">errors=#{errors},</if>
+            <if test="inputBufferRows!=null and inputBufferRows!='' ">input_buffer_rows=#{inputBufferRows},</if>
+            <if test="outputBufferRows!=null and outputBufferRows!='' ">output_buffer_rows=#{outputBufferRows},</if>
+            <if test="nrLinesDeleted!=null and nrLinesDeleted!='' ">nr_lines_deleted=#{nrLinesDeleted},</if>
+            <if test="nrLinesInput!=null and nrLinesInput!='' ">nr_lines_input=#{nrLinesInput},</if>
+            <if test="nrLinesOutput!=null and nrLinesOutput!='' ">nr_lines_output=#{nrLinesOutput},</if>
+            <if test="nrLinesRead!=null and nrLinesRead!='' ">nr_lines_read=#{nrLinesRead},</if>
+            <if test="nrLinesRejected!=null and nrLinesRejected!='' ">nr_lines_rejected=#{nrLinesRejected},</if>
+            <if test="nrLinesUpdated!=null and nrLinesUpdated!='' ">nr_lines_updated=#{nrLinesUpdated},</if>
+            <if test="nrLinesWritten!=null and nrLinesWritten!='' ">nr_lines_written=#{nrLinesWritten},</if>
+            <if test="startdate!=null and startdate!='' ">startdate=#{startdate},</if>
+            <if test="enddate!=null and enddate!='' ">enddate=#{enddate},</if>
+            <if test="logdate!=null and logdate!='' ">logdate=#{logdate},</if>
+            <if test="depdate!=null and depdate!='' ">depdate=#{depdate},</if>
+            <if test="replaydate!=null and replaydate!='' ">replaydate=#{replaydate},</if>
+            <if test="executingServer!=null and executingServer!='' ">executing_server=#{executingServer},</if>
+            <if test="executingUser!=null and executingUser!='' ">executing_user=#{executingUser},</if>
+            <if test="client!=null and client!='' ">client=#{client},</if>
+            <if test="createDay!=null and createDay!='' ">create_day=#{createDay},</if>
+            <if test="modifyTime!=null and modifyTime!='' ">modify_time=#{modifyTime},</if>
+            <if test="logField!=null and logField!='' ">log_field=#{logField},</if>
+            <if test="resultFilesList!=null and resultFilesList!='' ">result_files_list=#{resultFilesList},</if>
+            <if test="logText!=null and logText!='' ">log_text=#{logText},</if>
+        </set>
+    </sql>
+
+
+    <insert id="insertAutoKey" parameterType="com.khsh.etl.model.KettleMessageLogModel" useGeneratedKeys="true"
+            keyProperty="id">
+		 INSERT INTO kettle_message_log (
+ 			uuid, job_id, job_name, ktl_job_uuid,
+ 			ktl_job_name, ktl_job_type, log_channel_id, log_batch_id, seq_nr,
+ 			trans_name, errors, input_buffer_rows, output_buffer_rows, nr_lines_deleted,
+ 			nr_lines_input, nr_lines_output, nr_lines_read, nr_lines_rejected, nr_lines_updated,
+ 			nr_lines_written, startdate, enddate, logdate, depdate,
+ 			replaydate, executing_server, executing_user, client, create_day,
+ 			modify_time, log_field, result_files_list, log_text ) 	 VALUES (
+ 			#{uuid}, #{jobId}, #{jobName}, #{ktlJobUuid},
+ 			#{ktlJobName}, #{ktlJobType}, #{logChannelId}, #{logBatchId}, #{seqNr},
+ 			#{transName}, #{errors}, #{inputBufferRows}, #{outputBufferRows}, #{nrLinesDeleted},
+ 			#{nrLinesInput}, #{nrLinesOutput}, #{nrLinesRead}, #{nrLinesRejected}, #{nrLinesUpdated},
+ 			#{nrLinesWritten}, #{startdate}, #{enddate}, #{logdate}, #{depdate},
+ 			#{replaydate}, #{executingServer}, #{executingUser}, #{client}, #{createDay},
+ 			#{modifyTime}, #{logField}, #{resultFilesList}, #{logText} )
+	</insert>
+
+    <insert id="insertSingle" parameterType="com.khsh.etl.model.KettleMessageLogModel" useGeneratedKeys="true"
+            keyProperty="id">
+		 INSERT INTO kettle_message_log (
+ 			uuid, job_id, job_name, ktl_job_uuid,
+ 			ktl_job_name, ktl_job_type, log_channel_id, log_batch_id, seq_nr,
+ 			trans_name, errors, input_buffer_rows, output_buffer_rows, nr_lines_deleted,
+ 			nr_lines_input, nr_lines_output, nr_lines_read, nr_lines_rejected, nr_lines_updated,
+ 			nr_lines_written, startdate, enddate, logdate, depdate,
+ 			replaydate, executing_server, executing_user, client, create_day,
+ 			modify_time, log_field, result_files_list, log_text,  id )
+		 VALUES(
+ 			#{uuid}, #{jobId}, #{jobName}, #{ktlJobUuid},
+ 			#{ktlJobName}, #{ktlJobType}, #{logChannelId}, #{logBatchId}, #{seqNr},
+ 			#{transName}, #{errors}, #{inputBufferRows}, #{outputBufferRows}, #{nrLinesDeleted},
+ 			#{nrLinesInput}, #{nrLinesOutput}, #{nrLinesRead}, #{nrLinesRejected}, #{nrLinesUpdated},
+ 			#{nrLinesWritten}, #{startdate}, #{enddate}, #{logdate}, #{depdate},
+ 			#{replaydate}, #{executingServer}, #{executingUser}, #{client}, #{createDay},
+ 			#{modifyTime}, #{logField}, #{resultFilesList}, #{logText},  #{id} )
+	</insert>
+
+    <delete id="delete" parameterType="com.khsh.etl.model.KettleMessageLogModel">
+        DELETE FROM kettle_message_log
+        <include refid="SqlWherePK"></include>
+    </delete>
+
+    <update id="update" parameterType="com.khsh.etl.model.KettleMessageLogModel">
+        UPDATE kettle_message_log
+        <include refid="SqlSet"></include>
+        <include refid="SqlWherePK"></include>
+    </update>
+
+    <select id="findByPK" parameterType="com.khsh.etl.model.KettleMessageLogModel"
+            resultType="com.khsh.etl.model.KettleMessageLogModel">
+        SELECT * FROM kettle_message_log
+        <include refid="SqlWhere"></include>
+        <if test=" orderCond !=null ">order by ${orderCond}</if>
+    </select>
+
+    <select id="queryByCond" parameterType="com.khsh.etl.model.KettleMessageLogModel"
+            resultType="com.khsh.etl.model.KettleMessageLogModel">
+        SELECT * FROM kettle_message_log
+        <include refid="SqlWhere"></include>
+        <if test=" orderCond !=null ">order by ${orderCond}</if>
+    </select>
+
+    <select id="queryByPage" parameterType="com.khsh.etl.vo.KettleMessageLogVO"
+            resultType="com.khsh.etl.vo.KettleMessageLogVO">
+        SELECT
+        case when K.job_name is null then L.job_name else L.job_name end as job_name,
+        case when R.ktl_job_name is null then L.ktl_job_name else L.ktl_job_name end as ktl_job_name,
+        case when R.ktl_job_type is null then L.ktl_job_type else L.ktl_job_type end as ktl_job_type,
+        L.job_id,
+        L.id,
+        L.uuid,
+        L.log_channel_id,
+        L.log_batch_id,
+        L.seq_nr,
+        L.trans_name,
+        L.`errors`,
+        L.input_buffer_rows,
+        L.output_buffer_rows,
+        L.nr_lines_deleted,
+        L.nr_lines_input,
+        L.nr_lines_output,
+        L.nr_lines_read,
+        L.nr_lines_rejected,
+        L.nr_lines_updated,
+        L.nr_lines_written,
+        L.startdate,
+        L.enddate,
+        L.logdate,
+        L.depdate,
+        L.replaydate,
+        L.log_field,
+        L.executing_server,
+        L.executing_user,
+        L.client,
+        L.result_files_list,
+        L.log_text,
+        L.create_day,
+        L.modify_time
+        FROM kettle_message_log L
+        LEFT JOIN sys_job_schedule K
+        ON L.job_id = K.job_id
+        LEFT JOIN etl_kettle_repository R
+        ON L.ktl_job_uuid = R.uuid
+        WHERE 1=1
+        <if test="jobId!=null and jobId!='' ">and L.job_id like CONCAT('%', #{jobId}, '%')</if>
+        <if test="uuid!=null and uuid!='' ">and L.uuid=#{uuid}</if>
+        <if test="jobName!=null and jobName!='' ">and K.job_name like CONCAT('%', #{jobName}, '%')</if>
+
+        <if test="ktlJobName!=null and ktlJobName!='' ">and R.ktl_job_name like CONCAT('%', #{ktlJobName}, '%')</if>
+
+       <!-- <if test="jobStarttime!=null and jobStarttime!='' ">and L.job_starttime<![CDATA[>=]]> #{jobStarttime} </if>
+        <if test="jobEndtime!=null and jobEndtime!='' ">and L.job_endtime<![CDATA[<=]]> #{jobEndtime} </if>
+-->
+        <!--<if test="jobStarttime!=null and jobStarttime!='' ">and L.job_starttime<![CDATA[>=]]> CONCAT(#{jobStarttime}, ' 00:00:00') </if>-->
+        <!--<if test="jobEndtime!=null and jobEndtime!='' ">and L.job_endtime<![CDATA[<=]]> CONCAT(#{jobEndtime}, ' 23:59:59') </if>-->
+        <!---->
+
+        <if test="extSQL!=null ">${extSQL}</if>
+        order by L.enddate desc
+    </select>
+
+
+    <select id="queryJobDetailMessage" parameterType="com.khsh.etl.vo.KettleMessageLogVO"
+            resultType="com.khsh.etl.vo.KettleMessageLogVO">
+        SELECT
+        case when K.job_name is null then L.job_name else L.job_name end as job_name,
+        case when R.ktl_job_name is null then L.ktl_job_name else L.ktl_job_name end as ktl_job_name,
+        case when R.ktl_job_type is null then L.ktl_job_type else L.ktl_job_type end as ktl_job_type,
+        L.job_id, L.errors,
+        L.create_day,
+        L.modify_time, L.log_channel_id,
+        S.LINES_INPUT as nr_lines_input, S.LINES_OUTPUT as nr_lines_output, S.LINES_READ as nr_lines_read,
+        S.LINES_UPDATED as nr_lines_updated, S.LINES_WRITTEN as nr_lines_written, S.LINES_REJECTED as nr_lines_rejected,
+        S.STEPNAME as stepName, S.ERRORS as errors, S.LOG_FIELD as logText
+        FROM kettle_message_log L
+        LEFT JOIN sys_job_schedule K
+        ON L.job_id = K.job_id
+        LEFT JOIN etl_kettle_repository R
+        ON L.ktl_job_uuid = R.uuid
+        LEFT JOIN kettle_trans_log T
+        ON L.log_channel_id = T.CHANNEL_ID
+        LEFT JOIN kettle_steps_log S
+        ON S.ID_BATCH = T.ID_BATCH
+        WHERE 1=1
+        <if test="jobId!=null and jobId!='' ">and L.job_id like CONCAT('%', #{jobId}, '%')</if>
+        <if test="uuid!=null and uuid!='' ">and L.uuid=#{uuid}</if>
+        <if test="jobName!=null and jobName!='' ">and K.job_name like CONCAT('%', #{jobName}, '%')</if>
+        <if test="logChannelId!=null and logChannelId!='' ">and L.log_channel_id=#{logChannelId}</if>
+        <if test="ktlJobName!=null and ktlJobName!='' ">and R.ktl_job_name like CONCAT('%', #{ktlJobName}, '%')</if>
+
+       <!-- <if test="jobStarttime!=null and jobStarttime!='' ">and L.job_starttime<![CDATA[>=]]> #{jobStarttime} </if>
+        <if test="jobEndtime!=null and jobEndtime!='' ">and L.job_endtime<![CDATA[<=]]> #{jobEndtime} </if>
+-->
+        <if test="extSQL!=null ">${extSQL}</if>
+        order by L.enddate desc
+    </select>
+
+
+    <select id="findMaxId" parameterType="com.khsh.etl.model.KettleMessageLogModel" resultType="int">
+        SELECT max(id) FROM kettle_message_log
+        <include refid="SqlWhere"></include>
+    </select>
+
+</mapper>

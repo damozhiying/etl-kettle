@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.khsh.etl.mapper.EtlDatabaseBuildLogDao">
+
+	<sql id="SqlWhere">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+			<if test="buildUuid!=null and buildUuid!='' ">and build_uuid=#{buildUuid} </if>
+			<if test="logLevel!=null ">and log_level=#{logLevel} </if>
+			<if test="logSubject!=null and logSubject!='' ">and log_subject=#{logSubject} </if>
+			<if test="logResult!=null ">and log_result=#{logResult} </if>
+			<if test="status!=null ">and status=#{status} </if>
+			<if test="remark!=null and remark!='' ">and remark=#{remark} </if>
+			<if test="createDay!=null and createDay!='' ">and create_day=#{createDay} </if>
+			<if test="modifyTime!=null and modifyTime!='' ">and modify_time=#{modifyTime} </if>
+			<if test="modifyUser!=null and modifyUser!='' ">and modify_user=#{modifyUser} </if>
+			<if test="ext!=null and ext!='' ">and ext=#{ext} </if>
+			<if test="ext1!=null and ext1!='' ">and ext1=#{ext1} </if>
+			<if test="ext2!=null and ext2!='' ">and ext2=#{ext2} </if>
+			<if test="logDetail!=null and logDetail!='' ">and log_detail=#{logDetail} </if>
+		</where>
+	</sql>
+	<sql id="SqlWherePK">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+		</where>
+	</sql>
+	<sql id="SqlSet">
+		<set>
+			<if test="id!=null "> id=#{id}, </if>
+			<if test="buildUuid!=null and buildUuid!='' "> build_uuid=#{buildUuid}, </if>
+			<if test="logLevel!=null "> log_level=#{logLevel}, </if>
+			<if test="logSubject!=null and logSubject!='' "> log_subject=#{logSubject}, </if>
+			<if test="logResult!=null "> log_result=#{logResult}, </if>
+			<if test="status!=null "> status=#{status}, </if>
+			<if test="remark!=null and remark!='' "> remark=#{remark}, </if>
+			<if test="createDay!=null and createDay!='' "> create_day=#{createDay}, </if>
+			<if test="modifyTime!=null and modifyTime!='' "> modify_time=#{modifyTime}, </if>
+			<if test="modifyUser!=null and modifyUser!='' "> modify_user=#{modifyUser}, </if>
+			<if test="ext!=null and ext!='' "> ext=#{ext}, </if>
+			<if test="ext1!=null and ext1!='' "> ext1=#{ext1}, </if>
+			<if test="ext2!=null and ext2!='' "> ext2=#{ext2}, </if>
+			<if test="logDetail!=null and logDetail!='' "> log_detail=#{logDetail}, </if>
+		</set>
+	</sql>
+
+
+	<insert  id="insertAutoKey" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO etl_database_build_log (
+ 			build_uuid, log_level, log_subject, log_result,
+ 			status, remark, create_day, modify_time, modify_user,
+ 			ext, ext1, ext2, log_detail ) 	 VALUES (
+ 			#{buildUuid}, #{logLevel}, #{logSubject}, #{logResult},
+ 			#{status}, #{remark}, #{createDay}, #{modifyTime}, #{modifyUser},
+ 			#{ext}, #{ext1}, #{ext2}, #{logDetail} )
+	</insert>
+
+	<insert  id="insertSingle" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO etl_database_build_log (
+ 			build_uuid, log_level, log_subject, log_result,
+ 			status, remark, create_day, modify_time, modify_user,
+ 			ext, ext1, ext2, log_detail,  id )
+		 VALUES(
+ 			#{buildUuid}, #{logLevel}, #{logSubject}, #{logResult},
+ 			#{status}, #{remark}, #{createDay}, #{modifyTime}, #{modifyUser},
+ 			#{ext}, #{ext1}, #{ext2}, #{logDetail},  #{id} )
+	</insert>
+
+	<delete  id="delete" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" >
+		 DELETE FROM etl_database_build_log
+		 <include refid="SqlWhere"></include>
+	</delete>
+
+	<update  id="update" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" >
+		 UPDATE etl_database_build_log
+		 <include refid="SqlSet"></include>
+		 <include refid="SqlWherePK"></include>
+	</update>
+
+	<select  id="findByPK" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" resultType="com.khsh.etl.model.EtlDatabaseBuildLogModel" >
+		 SELECT * FROM etl_database_build_log
+		 <include refid="SqlWhere"></include>
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if>
+	</select>
+
+	<select  id="queryByCond" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" resultType="com.khsh.etl.model.EtlDatabaseBuildLogModel" >
+		 SELECT * FROM etl_database_build_log
+		 <include refid="SqlWhere"></include>
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if>
+	</select>
+
+	<select  id="queryByPage" parameterType="com.khsh.etl.vo.EtlDatabaseBuildLogVO" resultType="com.khsh.etl.vo.EtlDatabaseBuildLogVO" >
+        SELECT B.name as buildName, L.* FROM etl_database_build_log L, etl_database_build B
+        WHERE L.build_uuid = B.uuid
+        <if test="logLevel!=null ">and L.log_level=#{logLevel} </if>
+        <if test="buildName!=null and buildName!='' ">and B.name like CONCAT('%', #{buildName}, '%') </if>
+        <if test="logSubject!=null and logSubject!='' ">and L.log_subject=#{logSubject} </if>
+        <if test="logResult!=null ">and L.log_result=#{logResult} </if>
+        <if test="status!=null ">and L.status=#{status} </if>
+        <if test="remark!=null and remark!='' ">and L.remark=#{remark} </if>
+        <if test="createDay!=null and createDay!='' ">and L.create_day=#{createDay} </if>
+        <if test="modifyTime!=null and modifyTime!='' ">and L.modify_time=#{modifyTime} </if>
+        <if test="modifyUser!=null and modifyUser!='' ">and L.modify_user=#{modifyUser} </if>
+        <if test="extSQL!=null "> ${extSQL} </if>
+	</select>
+
+	<select  id="findMaxId" parameterType="com.khsh.etl.model.EtlDatabaseBuildLogModel" resultType="int" >
+		 SELECT max(id) FROM etl_database_build_log
+		 <include refid="SqlWhere"></include>
+	</select>
+
+</mapper>

@@ -3,6 +3,7 @@ package com.khsh.etl.kettle.kit;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.core.util.EnvUtil;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
@@ -41,9 +42,11 @@ public class KettleFactory {
     /**
      * 初始化环境变量
      */
-    public static void initEnv() throws KettleException {
+    public static synchronized void initEnv() throws KettleException {
         //初始化
         if (!KettleEnvironment.isInitialized()) {
+            // 日志缓冲不超过10000行，缓冲时间不超过12*60*60秒(12小时)
+            KettleLogStore.init(10000, 12*60*60);
             KettleEnvironment.init();
             EnvUtil.environmentInit();
         }
@@ -74,11 +77,11 @@ public class KettleFactory {
         //创建资源库对象，此时的对象还是一个空对象
         repository = new KettleDatabaseRepository();
         //创建资源库数据库对象，类似我们在spoon里面创建资源库
-        DatabaseMeta dataMeta = new DatabaseMeta(config.getName(), config.getType(), config.getAccess(), config.getHost(), config.getDb(), config.getPort(),
-                config.getUser(), config.getPassword());
+        DatabaseMeta dataMeta = new DatabaseMeta(config.getName(), config.getDbType(), config.getDbAccess(), config.getDbHost(), config.getDbDatabase(), String.valueOf(config.getDbPort()),
+                config.getDbUsername(), config.getDbPassword());
         //资源库元对象,名称参数，id参数，描述等可以随便定义
         KettleDatabaseRepositoryMeta kettleDatabaseMeta =
-                new KettleDatabaseRepositoryMeta(config.getId(), config.getName(), config.getDescription(), dataMeta);
+                new KettleDatabaseRepositoryMeta(config.getDbRepositoryId(), config.getName(), config.getDbDescription(), dataMeta);
         //给资源库赋值
         repository.init(kettleDatabaseMeta);
         //连接资源库

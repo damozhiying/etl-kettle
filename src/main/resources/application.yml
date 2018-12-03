@@ -1,14 +1,14 @@
 server:
-  port: 8099
+  port: 9998
   servlet:
-    context-path: /bss
+    context-path: /etl
     session:
       cookie:
         max-age: 60000s
       timeout: 1800s
 
   tomcat:
-    #accept-count: 
+    #accept-count:
     max-connections: 500
     max-threads: 1000
 
@@ -17,7 +17,7 @@ management:
     #是否启用安全
     enabled: false
   server:
-    port: 8088
+    port: 9996
     servlet:
       context-path: /monitor
 endpoints:
@@ -33,10 +33,12 @@ spring:
   #数据源配置
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://127.0.0.1:3306/etl_kettle?useSSL=false&serverTimezone=UTC
+    #url: jdbc:mysql://192.168.0.244:3306/etl_kettle?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
+    url: jdbc:mysql://127.0.0.1:3306/etl_kettle?useSSL=false&serverTimezone=UTC&useUnicode=true&characterEncoding=utf8
     username: root
     password: 123456
-    driver-class-name: com.mysql.cj.jdbc.Driver
+   # driver-class-name: com.mysql.cj.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
    # 下面为连接池的补充设置，应用到上面所有数据源中
     # 初始化大小，最小，最大
     initialSize: 3
@@ -61,7 +63,14 @@ spring:
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     # 合并多个DruidDataSource的监控数据
     useGlobalDataSourceStat: true
-    
+
+
+    ### ===========================  上传文件设置   ===============================
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        max-request-size: 100MB
+
 
   ### ===========================   redis   ===============================
   redis:
@@ -82,21 +91,43 @@ spring:
 # mybatis配置
 mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
-  mapper-locations: classpath:mybatis/mapper/**/*.xml
+  mapper-locations: classpath*:mybatis/mapper/**/*Mapper.xml
 
 # 基础的comm-web包配置信息
 ### ===========================   comm-web   ===============================
 comm-web:
-  tokenAuth: true
+  tokenAuth: false
   sessionIgnore: true
   # 忽略的拦截url地址信息(session过滤器),用‘,’分割
   sessionIgnoreURL: /login,/logout,.*/comm-web/version
+
+  ### ===========================  上传文件路径设置   ===============================
+  # 存储物理路径
+  storagePhysicalPath: C:\\upload\\
+  ## 访问相对路径（外部程序）
+  relativeURL: /
+  # 是否分类存储(image: 图片 video: 视频 audio: 音频 html: 网页 file:其他所有)
+  storageType: false
+  #  存储按天日期
+  storageByDate: false
+  # 是否更改文件名称(适用唯一)
+  changeFilename: true
+
 
 # 用户登录模块
 ### ===========================   user-info   ===============================
 bss-user-info:
   authTokenKey: Authorization
   # token 超时时间
-  authTokenTimeout: 1800
+  authTokenTimeout: 18000
+  # 单账号多用户可登录
+  authTokenSingle: false
   # token 忽略地址
   authTokenIgnoreURL: /sys-account/login,/sys-account/logout
+
+
+# quartz调度模块
+### ===========================   quartz调度模块   ===============================
+comm-quartz:
+  # 应用启动后，是否启动任务，默认（true） true：自动启动任务， false：其他模块调用
+  autoRunOnStart: true

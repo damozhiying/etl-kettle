@@ -8,7 +8,9 @@ import com.khsh.etl.databuilder.db.dialect.DbTypeEnum;
 import com.khsh.etl.databuilder.db.meta.DbColumnMeta;
 import com.khsh.etl.databuilder.db.meta.DbMetaHelper;
 import com.khsh.etl.databuilder.db.meta.DbTableMeta;
-import com.khsh.etl.databuilder.vo.TableVO;
+import com.khsh.etl.databuilder.db.vo.TableVO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ import java.util.List;
  * Version: 1.0
  */
 public class TablesTrans {
-
+    private final Logger log = LoggerFactory.getLogger(TablesTrans.class);
     private DbContext srcCtx = new DbContext();
     private DbContext destCtx = new DbContext();
     private StringBuffer msg = new StringBuffer();
@@ -45,10 +47,10 @@ public class TablesTrans {
         List<TableVO> srcTables = DbHelper.queryTables(srcCtx.getConnection(), srcCtx.getDatabase(), srcCtx.getIgnoreTables());
         if(srcTables!=null) {
             msg.append("源库表个数:").append(srcTables.size()).append("\r\n");
-            System.out.println("[库表个数]" + srcTables.size() );
+            log.info("[库表个数]" + srcTables.size() );
             for(TableVO item : srcTables) {
                 String tableName = item.getTableName();
-                System.out.println("[" + item.getTableType() + "]"
+                log.info("[" + item.getTableType() + "]"
                         + "[catalog.schema.表名]" + item.getTableCatalog() + "." + item.getTableSchema() + "." + tableName  );
                 List<DbColumnMeta> columnMeta = DbHelper.getColumnMeta(srcCtx, tableName);
 
@@ -124,7 +126,7 @@ public class TablesTrans {
         }  else {
             prefix = (StringUtils.isBlank(prefix) ? srcCtx.getDatabase().getCatalog() : prefix);
         }
-        destCtx.setTablePrefix(prefix+"_");
+        destCtx.setTablePrefix(prefix);
     }
 
     /**
@@ -139,9 +141,9 @@ public class TablesTrans {
         destCtx.getTables().clear();
         int count = 0;
         for(DbTableMeta item : srcCtx.getTables()) {
-            System.out.println(++count + "====[源库.表名]" + srcCtx.getDatabase().getSchema() + "." + item.getTableName()  );
+            log.info(++count + "====[源库.表名]" + srcCtx.getDatabase().getSchema() + "." + item.getTableName()  );
             DbTableMeta tableMeta = buildDestColumns(item);
-            System.out.println(count + "====[目标库.表名]"+ tableMeta.getTableName() + ", 建表脚本:" + tableMeta.getTableCreateShell());
+            log.info(count + "====[目标库.表名]"+ tableMeta.getTableName() + ", 建表脚本:" + tableMeta.getTableCreateShell());
             DbHelper.createTable(destCtx.getConnection(), destCtx.getDatabase(), isDrop, tableMeta.getTableName(), tableMeta.getTableCreateShell());
             destCtx.getTables().add(tableMeta);
         }
@@ -178,9 +180,11 @@ public class TablesTrans {
             getSrcTables();
             buildDestTables(isDrop);
         }finally {
-            System.out.println(msg.toString());
+            //System.out.println(msg.toString());
         }
     }
 
-
+    public StringBuffer getMsg() {
+        return msg;
+    }
 }

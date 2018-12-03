@@ -3,7 +3,6 @@ package com.khsh.etl.databuilder.db.meta;
 import com.ejet.comm.utils.collect.ListUtils;
 import com.khsh.etl.databuilder.db.dialect.DbTypeEnum;
 
-import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -11,13 +10,13 @@ import java.util.List;
  *
  */
 public class DbMetaHelper {
-	
+
 	private final static String MYSQL_DRIVER_NAME = "mysql";
     private final static String ORACLE_DRIVER_NAME = "oracle";
     private final static String SQLSERVER_DRIVER_NAME = "SQL SERVER";
     private final static String SYBASE_DRIVER_NAME = "sybase";
 
-	
+
 	/**
 	 * 查询库中所有表(不包括视图)
 	 */
@@ -60,7 +59,7 @@ public class DbMetaHelper {
 		System.out.println("[查询表]" + buffer.toString());
 		return buffer.toString();
 	}
-	
+
 	/**
 	 * 查询表结构
 	 */
@@ -210,7 +209,7 @@ public class DbMetaHelper {
         buff.append(")");
         return buff.toString();
     }
-	
+
 	/**
 	 * 获取删除表sql
 	 */
@@ -223,11 +222,11 @@ public class DbMetaHelper {
         }
         return buff.toString();
     }
-	
 
 
 
 
-	
-	
+
+
+
 }

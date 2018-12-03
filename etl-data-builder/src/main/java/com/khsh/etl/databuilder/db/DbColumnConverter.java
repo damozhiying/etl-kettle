@@ -1,8 +1,8 @@
 package com.khsh.etl.databuilder.db;
 
-import com.khsh.etl.databuilder.db.meta.DbColumnMeta;
 import com.khsh.etl.databuilder.db.dialect.DbColumnTypeEnum;
 import com.khsh.etl.databuilder.db.dialect.DbTypeEnum;
+import com.khsh.etl.databuilder.db.meta.DbColumnMeta;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +29,11 @@ public class DbColumnConverter {
      * oracle转为mysql字段
      */
     public static Map<String, String> Oracle2Mysql = new HashMap<>();
+
+    /**
+     * mysql转oracle字段
+     */
+    public static Map<String, String> Mysql2Oracle = new HashMap<>();
 
     static {
         sqlServer2Mysql.put("bigint", "bigint");
@@ -152,6 +157,63 @@ public class DbColumnConverter {
         Oracle2Mysql.put("COMPLEX", "BLOB");
         //Oracle2Mysql.put("INTERVAL DAY TO SECOND", "BLOB");
 
+
+        // ===============================  mysql转oracle  ===================================================
+        Mysql2Oracle.put("tinyint", "NUMBER"); //NUMBER(3, 0)
+        Mysql2Oracle.put("smallint", "NUMBER"); //NUMBER(5, 0)
+        Mysql2Oracle.put("mediumint", "NUMBER"); //NUMBER(7, 0)
+        Mysql2Oracle.put("int", "NUMBER"); //NUMBER(10, 0)
+        Mysql2Oracle.put("integer", "NUMBER"); //NUMBER(10, 0)
+        Mysql2Oracle.put("bigint", "NUMBER"); //NUMBER(19, 0)
+
+        Mysql2Oracle.put("bit", "RAW");
+        Mysql2Oracle.put("real", "FLOAT"); //FLOAT (24)
+        Mysql2Oracle.put("float", "FLOAT"); //FLOAT
+        Mysql2Oracle.put("double", "FLOAT"); //FLOAT (24)
+        Mysql2Oracle.put("decimal", "FLOAT"); //FLOAT (24)
+
+        Mysql2Oracle.put("numeric", "NUMBER");
+
+        Mysql2Oracle.put("char", "CHAR");
+        //varchar(5000) oracle最大VARCHAR2(4000)，4001都不行。暂用VARCHAR2(4000)对应。
+        Mysql2Oracle.put("varchar", "VARCHAR2");
+
+        Mysql2Oracle.put("year", "NUMBER");
+        //暂用TIMESTAMP对应，但是oracle认识的timestamp是这样的："insert into JJJ values (14, '天ss天','18-8月-2016 10.42.12')";你写2016-8-18 10:42:12是无法写入oracle的。
+        Mysql2Oracle.put("timestamp", "timestamp");
+        // datetime，类似于timestamp的格式 oracle的DATE类型，只认识'14-6月 -16'，不认识'14-6月 -16 10:9:8'，不认识2016-06-09。，所以暂用TIMESTAMP对应
+        Mysql2Oracle.put("datetime", "timestamp");
+        //date，mysql的date类型如：2016-06-09 oracle的DATE类型，只认识'14-6月 -16'，不认识'14-6月 -16 10:9:8'，不认识2016-06-09。
+        Mysql2Oracle.put("date", "DATE");
+
+        Mysql2Oracle.put("tinyblob", "RAW");
+        Mysql2Oracle.put("blob", "BLOB");
+        Mysql2Oracle.put("mediumblob", "BLOB");
+        Mysql2Oracle.put("longblob", "BLOB");
+
+        Mysql2Oracle.put("tinytext", "VARCHAR2");
+        Mysql2Oracle.put("text", "CLOB");
+        //没有text类型，是不是应该用LONG？但是oracle的一个表中不能出现两个LONG的字段。所以暂用VARCHAR2(2000)对应。
+        Mysql2Oracle.put("longtext", "CLOB"); //CLOB, RAW
+        Mysql2Oracle.put("mediumtext", "BLOB"); //BLOB, RAW
+
+        //oracle没有枚举型，暂用VARCHAR2(10)对应。其中10这个长度看情况调节。
+        Mysql2Oracle.put("enum", "VARCHAR2");
+        Mysql2Oracle.put("set", "VARCHAR2");
+
+        Mysql2Oracle.put("binary", "BLOB"); //VARCHAR2(2000)
+        Mysql2Oracle.put("varbinary", "VARCHAR2"); //VARCHAR2(2000)
+
+        //特殊字段类型，目前暂时不处理
+        Mysql2Oracle.put("point", "BLOB");
+        Mysql2Oracle.put("linestring", "BLOB");
+        Mysql2Oracle.put("polygon", "BLOB");
+        Mysql2Oracle.put("geometry", "BLOB");
+        Mysql2Oracle.put("multipoint", "BLOB");
+        Mysql2Oracle.put("multilinestring", "BLOB");
+        Mysql2Oracle.put("multipolygon", "BLOB");
+        Mysql2Oracle.put("geometrycollection", "BLOB");
+
     }
 
 
@@ -219,10 +281,13 @@ public class DbColumnConverter {
                 item.getColumnType()== DbColumnTypeEnum.CHAR || item.getColumnType()== DbColumnTypeEnum.RAW ||
                 //oracle
                 item.getColumnType()== DbColumnTypeEnum.NVARCHAR2 || item.getColumnType()== DbColumnTypeEnum.VARCHAR2 ||
+
+                item.getColumnType()== DbColumnTypeEnum.SMALLINT || item.getColumnType()== DbColumnTypeEnum.TINYINT || item.getColumnType()== DbColumnTypeEnum.MEDIUMINT ||
+                item.getColumnType()== DbColumnTypeEnum.INT || item.getColumnType()== DbColumnTypeEnum.INTEGER || item.getColumnType()== DbColumnTypeEnum.BIGINT ||
+
                 //mysql中DATETIME只能保存6为
                 item.getColumnType()== DbColumnTypeEnum.DATETIME || item.getColumnType()== DbColumnTypeEnum.TIMESTAMP ||
-                item.getColumnType()== DbColumnTypeEnum.SMALLINT || item.getColumnType()== DbColumnTypeEnum.BIGINT ||
-                item.getColumnType()== DbColumnTypeEnum.TINYINT ||
+
                 item.getColumnType()== DbColumnTypeEnum.VARBINARY ) {
             return true;
         }
@@ -249,6 +314,10 @@ public class DbColumnConverter {
             dest = DbColumnTypeEnum.getColTypeByname(sqlServer2Oracle.get(srcMeta.getColumnType().getName().toLowerCase()));
             destMeta.setColumnType(dest);
         }
+        if(srcType== DbTypeEnum.MYSQL && destType== DbTypeEnum.ORACLE) {
+            dest = DbColumnTypeEnum.getColTypeByname(Mysql2Oracle.get(srcMeta.getColumnType().getName().toLowerCase()));
+            destMeta.setColumnType(dest);
+        }
         if(dest==null) {
             throw new RuntimeException("字段类型转换异常, 源库：" + srcType.getDesc() +
                     ", 字段类型:" + srcMeta.getColumnType().getName() + "--->目标库类型未找到：" + destType.getDesc());
@@ -261,7 +330,7 @@ public class DbColumnConverter {
      *
      * @param src
      */
-    public static void convertSpecailSqlserver2MySql(DbColumnMeta src, DbColumnMeta destMeta) {
+    public static void convertSqlserver2MySql(DbColumnMeta src, DbColumnMeta destMeta) {
         //mysql datetime2  DATETIMEOFFSET 长度为7时，需要转为char类型
         switch (src.getColumnType()) {
             case DATETIME2:
@@ -327,7 +396,7 @@ public class DbColumnConverter {
      *
      * @param srcMeta
      */
-    public static void convertSpecailSqlserver2Oracle(DbColumnMeta srcMeta, DbColumnMeta destMeta) {
+    public static void convertSqlserver2Oracle(DbColumnMeta srcMeta, DbColumnMeta destMeta) {
 
         switch (srcMeta.getColumnType()) {
             case SMALLINT:
@@ -417,14 +486,211 @@ public class DbColumnConverter {
     }
 
     /**
+     * 特殊字段转换设置长度
+     *
+     * @param srcMeta
+     */
+    public static void convertMysql2Oracle(DbColumnMeta srcMeta, DbColumnMeta destMeta) {
+        switch (srcMeta.getColumnType()) {
+            case TINYINT:
+                destMeta.setLength(3);
+                destMeta.setDataScale(0);
+                break;
+            case SMALLINT:
+                destMeta.setLength(5);
+                destMeta.setDataScale(0);
+                break;
+            case MEDIUMINT:
+                destMeta.setLength(7);
+                destMeta.setDataScale(0);
+                break;
+            case INT:
+                destMeta.setLength(10);
+                destMeta.setDataScale(0);
+                break;
+            case INTEGER:
+                destMeta.setLength(10);
+                destMeta.setDataScale(0);
+                break;
+            case BIGINT:
+                destMeta.setLength(19);
+                destMeta.setDataScale(0);
+                break;
+
+            case REAL:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case FLOAT:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case DOUBLE:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case DECIMAL:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+
+            // case MONEY:
+            //     destMeta.setLength(19);
+            //     destMeta.setDataScale(4);
+            //     break;
+            // case SMALLMONEY:
+            //     destMeta.setLength(10);
+            //     destMeta.setDataScale(4);
+            //     break;
+            // case UNIQUEIDENTIFIER:
+            //     destMeta.setLength(64);
+            //     destMeta.setLength(64);
+            //     break;
+            case VARCHAR:
+                if(srcMeta.getLength()==-1 || srcMeta.getLength()>=4000) {
+                    destMeta.setColumnType(DbColumnTypeEnum.CLOB);
+                }
+                // else if(srcMeta.getLength()>=2000) {
+                //     destMeta.setLength(srcMeta.getLength()/2);
+                // }
+                break;
+            // case TIMESTAMP: //sqlserver为8位，所以需要转换
+            //     if(srcMeta.getLength()==null || srcMeta.getLength()<=8) {
+            //         destMeta.setLength(8);
+            //     }
+            //     break;
+            // case VARBINARY: //如果VARBINARY类型
+            //     if(srcMeta.getLength()==-1) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.BLOB);
+            //     }
+            //     break;
+            // case CHAR: //sqlserver转oracle，如果通过kettle转换，char字符类型，默认oracle建表需要多2个字符，否则会提示长度不够。oracle长度为2000，大于2000需要转化
+            //     if(srcMeta.getLength()==-1 || srcMeta.getLength()>=4000) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.CLOB);
+            //     }else if(srcMeta.getLength()>=2000-2) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.VARCHAR2);
+            //     }
+            //     destMeta.setLength(srcMeta.getLength()+2);
+            //     break;
+            // case TIME: //
+            //     destMeta.setLength(128);
+            //     break;
+            // case SYSNAME: //
+            //     destMeta.setLength(128);
+            //     break;
+        }
+    }
+    /**
+     * 特殊字段转换设置长度
+     *
+     * @param srcMeta
+     */
+    public static void convertOracle2Mysql(DbColumnMeta srcMeta, DbColumnMeta destMeta) {
+        switch (srcMeta.getColumnType()) {
+            case TINYINT:
+                destMeta.setLength(3);
+                destMeta.setDataScale(0);
+                break;
+            case SMALLINT:
+                destMeta.setLength(5);
+                destMeta.setDataScale(0);
+                break;
+            case MEDIUMINT:
+                destMeta.setLength(7);
+                destMeta.setDataScale(0);
+                break;
+            case INT:
+                destMeta.setLength(10);
+                destMeta.setDataScale(0);
+                break;
+            case INTEGER:
+                destMeta.setLength(10);
+                destMeta.setDataScale(0);
+                break;
+            case BIGINT:
+                destMeta.setLength(19);
+                destMeta.setDataScale(0);
+                break;
+
+            case REAL:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case FLOAT:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case DOUBLE:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+            case DECIMAL:
+                destMeta.setLength(24);
+                destMeta.setDataScale(0);
+                break;
+
+            // case MONEY:
+            //     destMeta.setLength(19);
+            //     destMeta.setDataScale(4);
+            //     break;
+            // case SMALLMONEY:
+            //     destMeta.setLength(10);
+            //     destMeta.setDataScale(4);
+            //     break;
+            // case UNIQUEIDENTIFIER:
+            //     destMeta.setLength(64);
+            //     destMeta.setLength(64);
+            //     break;
+            case VARCHAR:
+                if(srcMeta.getLength()==-1 || srcMeta.getLength()>=4000) {
+                    destMeta.setColumnType(DbColumnTypeEnum.CLOB);
+                }
+                // else if(srcMeta.getLength()>=2000) {
+                //     destMeta.setLength(srcMeta.getLength()/2);
+                // }
+                break;
+            // case TIMESTAMP: //sqlserver为8位，所以需要转换
+            //     if(srcMeta.getLength()==null || srcMeta.getLength()<=8) {
+            //         destMeta.setLength(8);
+            //     }
+            //     break;
+            // case VARBINARY: //如果VARBINARY类型
+            //     if(srcMeta.getLength()==-1) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.BLOB);
+            //     }
+            //     break;
+            // case CHAR: //sqlserver转oracle，如果通过kettle转换，char字符类型，默认oracle建表需要多2个字符，否则会提示长度不够。oracle长度为2000，大于2000需要转化
+            //     if(srcMeta.getLength()==-1 || srcMeta.getLength()>=4000) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.CLOB);
+            //     }else if(srcMeta.getLength()>=2000-2) {
+            //         destMeta.setColumnType(DbColumnTypeEnum.VARCHAR2);
+            //     }
+            //     destMeta.setLength(srcMeta.getLength()+2);
+            //     break;
+            // case TIME: //
+            //     destMeta.setLength(128);
+            //     break;
+            // case SYSNAME: //
+            //     destMeta.setLength(128);
+            //     break;
+        }
+    }
+
+    /**
      * 特殊字段类型转换
      */
     public static void convertSpecail(DbColumnMeta srcMeta, DbTypeEnum srcType, DbTypeEnum destType, DbColumnMeta destMeta) {
         if(srcType== DbTypeEnum.SQLSERVER && destType== DbTypeEnum.MYSQL) {
-            convertSpecailSqlserver2MySql(srcMeta, destMeta);
+            convertSqlserver2MySql(srcMeta, destMeta);
         }
         if(srcType== DbTypeEnum.SQLSERVER && destType== DbTypeEnum.ORACLE) {
-            convertSpecailSqlserver2Oracle(srcMeta, destMeta);
+            convertSqlserver2Oracle(srcMeta, destMeta);
+        }
+        if(srcType== DbTypeEnum.MYSQL && destType== DbTypeEnum.ORACLE) {
+            convertMysql2Oracle(srcMeta, destMeta);
+        }
+        if(srcType== DbTypeEnum.ORACLE && destType== DbTypeEnum.MYSQL) {
+            convertOracle2Mysql(srcMeta, destMeta);
         }
     }
 

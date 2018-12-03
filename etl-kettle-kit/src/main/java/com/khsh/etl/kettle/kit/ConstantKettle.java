@@ -31,4 +31,16 @@ public class ConstantKettle {
      * kettle资源类型 FILE, 文件方式
      */
     public static final String REP_TYPE_FILE = "FILE";
+
+
+    //1、正常 2：终止 3：未完成 4：异常
+    public static final Integer JOB_RESULT_OK = 1;
+    public static final Integer JOB_RESULT_STOP = 2;
+    public static final Integer JOB_RESULT_UNFINISHED = 3;
+    public static final Integer JOB_RESULT_ERROR = 3;
+
+
+
+
+
 }

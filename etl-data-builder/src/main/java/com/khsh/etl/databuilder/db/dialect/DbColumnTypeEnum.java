@@ -2,7 +2,7 @@ package com.khsh.etl.databuilder.db.dialect;
 
 /**
  * 表字段类型
- * 
+ *
  * sqlserver注意事项：
  * 		从 decimal 或 numeric 向 float 或 real 转换会导致精度损失。
  *      从 int、smallint、tinyint、float、real、money 或 smallmoney 向 decimal 或 numeric 转换会导致溢出。
@@ -24,28 +24,31 @@ package com.khsh.etl.databuilder.db.dialect;
  *      浮点数据为近似值float型变量在存入值时，有时值得大小会发生改变。
  *      float 和 real 数据类型被称为近似的数据类型。
  *      numeric 和 decimal 数据类型的默认最大精度值是 38
- *            
- *      
- * 
+ *
+ *
+ *
  */
 public enum DbColumnTypeEnum {
     VARCHAR("VARCHAR","可变长度字符类型"),
     NVARCHAR("NVARCHAR","可变长度NVARCHAR类型"),
     CHAR("CHAR","字符类型"),
-    BIGINT("BIGINT","长整形"),
-    INT("INT","整形"),
+
     BINARY("BINARY","二进制字符串"),
     SMALLINT("SMALLINT","SMALLINT类型"),
     VARBINARY("VARBINARY","VARBINARY类型"), //
     SYSNAME("SYSNAME","sqlserver SYSNAME类型"), //
 
     BIT("BIT","二进制字符串"),
-    TINYINT("TINYINT","MySql代替boolean"), //SQL SERVER的bit类型，对于零，识别为False，非零值识别为True。
 
-    
+    TINYINT("TINYINT","MySql代替boolean"), //SQL SERVER的bit类型，对于零，识别为False，非零值识别为True。
+    MEDIUMINT("MEDIUMINT","MySql中mediumint"), //SQL SERVER的bit类型，对于零，识别为False，非零值识别为True。
+    BIGINT("BIGINT","长整形"),
+    INTEGER("INTEGER","INTEGER整形"),
+    INT("INT","整形"),
+
     FLOAT("FLOAT","float浮点型"),
     REAL("REAL","REAL类型"), //float
-    
+
     DOUBLE("DOUBLE","双精度double型"),
 
     MONEY("MONEY","精确数值型"), //float 默认转换为decimal(19,4)
@@ -54,7 +57,7 @@ public enum DbColumnTypeEnum {
     //numeric 和 decimal 数据类型的默认最大精度值是 38
     NUMERIC("NUMERIC","NUMERIC类型"), //decimal
     DECIMAL("DECIMAL","精确数值decimal型"),
-    
+
     SMALLMONEY("SMALLMONEY","SMALLMONEY类型"), //float
     UNIQUEIDENTIFIER("UNIQUEIDENTIFIER","UNIQUEIDENTIFIER类型"), //对应mysql的UUID(),设置为文本类型即可。
     XML("XML","XML类型"), //对应mysql的text
@@ -76,9 +79,9 @@ public enum DbColumnTypeEnum {
     SMALLDATETIME("SMALLDATETIME","时间类型"),
     TIME("TIME","时间类型"),
     TIMESTAMP("TIMESTAMP","时间类型"),
- 
+
     TIMESTAMP_WITH_TIME_ZONE("TIMESTAMP (9) WITH TIME ZONE","oracle时区类型"),
-    
+
 //    INTERVAL_DAY2_TOSECOND6("INTERVAL DAY(2) TO SECOND(6)","时间类型"),
 //    INTERVAL_DAY2_TOSECOND6("INTERVAL DAY(2) TO SECOND(6)","时间类型"),
 

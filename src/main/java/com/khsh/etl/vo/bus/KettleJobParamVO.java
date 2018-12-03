@@ -1,5 +1,7 @@
 package com.khsh.etl.vo.bus;
 
+import com.khsh.etl.model.EtlKettleRepositoryModel;
+
 /**
  * Copyright (C), 2016-2018, 武汉康华数海有限公司
  * FileName: KettleJobParamVO
@@ -9,7 +11,7 @@ package com.khsh.etl.vo.bus;
  * History:
  * Version: 1.0
  */
-public class KettleJobParamVO {
+public class KettleJobParamVO extends EtlKettleRepositoryModel {
 
     /**  任务ID  */
     private String jobId;
@@ -19,7 +21,11 @@ public class KettleJobParamVO {
     private String paramName;
     /**  参数类型  */
     private String paramType;
+    /**  顺序, 0:前置 1：正常 2:错误  */
+    private Integer beforeAfter;
 
+    /** 资源对于数据库id   */
+    private String databaseUuid;
     /**  kette作业id  */
     private String ktlJobUuid;
     /**  kette作业类型: KJBKTR  */
@@ -110,5 +116,23 @@ public class KettleJobParamVO {
 
     public String getKtlParamValue(){
         return ktlParamValue;
+    }
+
+    public Integer getBeforeAfter() {
+        return beforeAfter;
+    }
+
+    public void setBeforeAfter(Integer beforeAfter) {
+        this.beforeAfter = beforeAfter;
+    }
+
+    @Override
+    public String getDatabaseUuid() {
+        return databaseUuid;
+    }
+
+    @Override
+    public void setDatabaseUuid(String databaseUuid) {
+        this.databaseUuid = databaseUuid;
     }
 }

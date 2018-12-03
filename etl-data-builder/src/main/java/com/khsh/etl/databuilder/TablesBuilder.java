@@ -29,6 +29,8 @@ public class TablesBuilder {
     private DbContext src = new DbContext();
     private DbContext dest = new DbContext();
 
+    private String msg = "";
+
     public TablesBuilder(CoDbConfig src, CoDbConfig dest) {
         this.srcDB = src;
         this.destDB = dest;
@@ -40,7 +42,8 @@ public class TablesBuilder {
     private void initConnection(CoDbConfig config, DbContext ctx) throws SQLException {
         Connection connection = CoDbFactory.getConnection(config.getDriverClassName(), config.getUrl(), config.getUsername(), config.getPassword());
         if(connection==null) {
-            throw new RuntimeException("数据库连接失败!" + config.getUrl());
+            msg = "数据库连接失败!" + config.getUrl();
+            throw new SQLException(msg);
         }
         String catalog = null;
         String schema = null;
@@ -77,8 +80,9 @@ public class TablesBuilder {
     /**
      * 是否开启表前缀，如果开启就增加，默认为false
      */
-    public void setHasPrefix(boolean hasPrefix) {
-        src.setHasPrefix(hasPrefix);
+    public void setTablePrefix(String prefix) {
+        src.setHasPrefix(prefix==null ? false : true);
+        src.setTablePrefix(prefix);
     }
 
     /**
@@ -87,19 +91,19 @@ public class TablesBuilder {
      * @throws Exception
      */
     public void build(boolean isDrop) throws Exception {
+        TablesTrans trans = new TablesTrans(src, dest);
         try {
             initConnection(srcDB, src);
             initConnection(destDB, dest);
-
-            TablesTrans trans = new TablesTrans(src, dest);
             trans.execute(isDrop);
-
         } finally {
-
             IOUtils.closeQuietly(src.getConnection());
             IOUtils.closeQuietly(dest.getConnection());
+            msg = trans.getMsg().toString();
         }
     }
 
-
+    public String getMsg() {
+        return msg;
+    }
 }

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.khsh.etl.mapper.SysJobParamDao">
+
+	<sql id="SqlWhere">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+			<if test="jobId!=null and jobId!='' ">and job_id=#{jobId} </if>
+			<if test="jobName!=null and jobName!='' ">and job_name=#{jobName} </if>
+			<if test="paramName!=null and paramName!='' ">and param_name=#{paramName} </if>
+			<if test="paramType!=null and paramType!='' ">and param_type=#{paramType} </if>
+			<if test="paramClazz!=null and paramClazz!='' ">and param_clazz=#{paramClazz} </if>
+			<if test="beforeAfter!=null ">and before_after=#{beforeAfter} </if>
+			<if test="status!=null ">and status=#{status} </if>
+			<if test="remark!=null and remark!='' ">and remark=#{remark} </if>
+			<if test="modifyTime!=null and modifyTime!='' ">and modify_time=#{modifyTime} </if>
+			<if test="modifyUser!=null and modifyUser!='' ">and modify_user=#{modifyUser} </if>
+			<if test="ext!=null and ext!='' ">and ext=#{ext} </if>
+			<if test="ext1!=null and ext1!='' ">and ext1=#{ext1} </if>
+			<if test="ext2!=null and ext2!='' ">and ext2=#{ext2} </if>
+			<if test="paramValue!=null and paramValue!='' ">and param_value=#{paramValue} </if>
+		</where>
+	</sql>
+	<sql id="SqlWherePK">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+		</where>
+	</sql>
+	<sql id="SqlSet">
+		<set>
+			<if test="id!=null "> id=#{id}, </if>
+			<if test="jobId!=null and jobId!='' "> job_id=#{jobId}, </if>
+			<if test="jobName!=null and jobName!='' "> job_name=#{jobName}, </if>
+			<if test="paramName!=null and paramName!='' "> param_name=#{paramName}, </if>
+			<if test="paramType!=null and paramType!='' "> param_type=#{paramType}, </if>
+			<if test="paramClazz!=null and paramClazz!='' "> param_clazz=#{paramClazz}, </if>
+            <if test="beforeAfter!=null "> before_after=#{beforeAfter}, </if>
+			<if test="status!=null "> status=#{status}, </if>
+			<if test="remark!=null and remark!='' "> remark=#{remark}, </if>
+			<if test="modifyTime!=null and modifyTime!='' "> modify_time=#{modifyTime}, </if>
+			<if test="modifyUser!=null and modifyUser!='' "> modify_user=#{modifyUser}, </if>
+			<if test="ext!=null and ext!='' "> ext=#{ext}, </if>
+			<if test="ext1!=null and ext1!='' "> ext1=#{ext1}, </if>
+			<if test="ext2!=null and ext2!='' "> ext2=#{ext2}, </if>
+			<if test="paramValue!=null and paramValue!='' "> param_value=#{paramValue}, </if>
+		</set>
+	</sql>
+
+
+	<insert  id="insertAutoKey" parameterType="com.khsh.etl.model.SysJobParamModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO sys_job_param (
+ 			job_id, job_name, param_name, param_type, 
+ 			param_clazz, before_after, status, remark, modify_time, modify_user,
+ 			ext, ext1, ext2, param_value ) 	 VALUES (
+ 			#{jobId}, #{jobName}, #{paramName}, #{paramType}, 
+ 			#{paramClazz}, #{beforeAfter},  #{status}, #{remark}, #{modifyTime}, #{modifyUser},
+ 			#{ext}, #{ext1}, #{ext2}, #{paramValue} ) 
+	</insert>
+
+	<insert  id="insertSingle" parameterType="com.khsh.etl.model.SysJobParamModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO sys_job_param (
+ 			job_id, job_name, param_name, param_type, 
+ 			param_clazz, before_after, status, remark, modify_time, modify_user,
+ 			ext, ext1, ext2, param_value,  id ) 
+		 VALUES( 
+ 			#{jobId}, #{jobName}, #{paramName}, #{paramType}, 
+ 			#{paramClazz}, #{beforeAfter}, #{status}, #{remark}, #{modifyTime}, #{modifyUser},
+ 			#{ext}, #{ext1}, #{ext2}, #{paramValue},  #{id} ) 
+	</insert>
+
+	<delete  id="delete" parameterType="com.khsh.etl.model.SysJobParamModel" >
+		 DELETE FROM sys_job_param
+		 <include refid="SqlWherePK"></include>
+	</delete>
+
+	<update  id="update" parameterType="com.khsh.etl.model.SysJobParamModel" >
+		 UPDATE sys_job_param
+		 <include refid="SqlSet"></include> 
+		 <include refid="SqlWherePK"></include> 
+	</update>
+
+	<select  id="findByPK" parameterType="com.khsh.etl.model.SysJobParamModel" resultType="com.khsh.etl.model.SysJobParamModel" >
+		 SELECT * FROM sys_job_param
+		 <include refid="SqlWhere"></include> 
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if> 
+	</select>
+
+	<select  id="queryByCond" parameterType="com.khsh.etl.model.SysJobParamModel" resultType="com.khsh.etl.model.SysJobParamModel" >
+		 SELECT * FROM sys_job_param
+		 <include refid="SqlWhere"></include> 
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if> 
+	</select>
+
+	<select  id="queryByPage" parameterType="com.khsh.etl.model.SysJobParamModel" resultType="com.khsh.etl.model.SysJobParamModel" >
+		 SELECT * FROM sys_job_param
+		 <include refid="SqlWhere"></include> 
+		 <if test="extSQL!=null "> ${extSQL} </if> 
+	</select>
+
+	<select  id="findMaxId" parameterType="com.khsh.etl.model.SysJobParamModel" resultType="int" >
+		 SELECT max(id) FROM sys_job_param
+		 <include refid="SqlWhere"></include> 
+	</select>
+
+    <select  id="queryKettleByPage" parameterType="com.khsh.etl.vo.SysJobParamKettleVO" resultType="com.khsh.etl.vo.SysJobParamKettleVO" >
+        SELECT R.ktl_job_name, R.ktl_job_type, P.*
+        FROM sys_job_param P, etl_kettle_repository R
+        WHERE R.uuid = P.param_value
+        <if test="id!=null ">and P.id=#{id} </if>
+        <if test="jobId!=null and jobId!='' ">and P.job_id=#{jobId} </if>
+        <if test="jobName!=null and jobName!='' ">and P.job_name like CONCAT('%', #{jobName}, '%') </if>
+        <if test="paramName!=null and paramName!='' ">and P.param_name like CONCAT('%', #{paramName}, '%') </if>
+        <if test="paramType!=null and paramType!='' ">and P.param_type=#{paramType} </if>
+        <if test="paramClazz!=null and paramClazz!='' ">and P.param_clazz=#{paramClazz} </if>
+        <if test="beforeAfter!=null ">and P.before_after=#{beforeAfter} </if>
+        <if test="status!=null">and P.status=#{status} </if>
+        <if test="remark!=null and remark!='' ">and P.remark=#{remark} </if>
+        <if test="modifyTime!=null and modifyTime!='' ">and P.modify_time=#{modifyTime} </if>
+        <if test="modifyUser!=null and modifyUser!='' ">and P.modify_user=#{modifyUser} </if>
+
+
+        <if test="ktlJobType!=null and ktlJobType!='' ">and R.ktl_job_type=#{ktlJobType} </if>
+        <if test="ktlJobName!=null and ktlJobName!='' ">and R.ktl_job_name like CONCAT('%', #{ktlJobName}, '%') </if>
+        <if test="repType!=null and repType!='' ">and R.rep_type=#{repType} </if>
+        <if test="repPath!=null and repPath!='' ">and R.rep_path like CONCAT('%', #{repPath}, '%')  </if>
+
+        <if test="extSQL!=null "> ${extSQL} </if>
+    </select>
+
+
+    <select  id="findKettleByPK" parameterType="com.khsh.etl.vo.SysJobParamKettleVO" resultType="com.khsh.etl.vo.SysJobParamKettleVO" >
+        SELECT R.ktl_job_name, R.ktl_job_type, P.*
+        FROM sys_job_param P, etl_kettle_repository R
+        WHERE R.uuid = P.param_value
+        <if test="id!=null ">and P.id=#{id} </if>
+        <if test="jobId!=null and jobId!='' ">and P.job_id=#{jobId} </if>
+        <if test="jobName!=null and jobName!='' ">and P.job_name like CONCAT('%', #{jobName}, '%') </if>
+        <if test="paramName!=null and paramName!='' ">and P.param_name like CONCAT('%', #{paramName}, '%') </if>
+        <if test="paramType!=null and paramType!='' ">and P.param_type=#{paramType} </if>
+        <if test="paramClazz!=null and paramClazz!='' ">and P.param_clazz=#{paramClazz} </if>
+        <if test="beforeAfter!=null ">and P.before_after=#{beforeAfter} </if>
+        <if test="status!=null ">and P.status=#{status} </if>
+        <if test="remark!=null and remark!='' ">and P.remark=#{remark} </if>
+        <if test="modifyTime!=null and modifyTime!='' ">and P.modify_time=#{modifyTime} </if>
+        <if test="modifyUser!=null and modifyUser!='' ">and P.modify_user=#{modifyUser} </if>
+
+
+        <if test="ktlJobType!=null and ktlJobType!='' ">and R.ktl_job_type=#{ktlJobType} </if>
+        <if test="ktlJobName!=null and ktlJobName!='' ">and R.ktl_job_name like CONCAT('%', #{ktlJobName}, '%') </if>
+        <if test="repType!=null and repType!='' ">and R.rep_type=#{repType} </if>
+        <if test="repPath!=null and repPath!='' ">and R.rep_path like CONCAT('%', #{repPath}, '%')  </if>
+
+        <if test=" orderCond !=null ">  order by ${orderCond} </if>
+    </select>
+
+</mapper>

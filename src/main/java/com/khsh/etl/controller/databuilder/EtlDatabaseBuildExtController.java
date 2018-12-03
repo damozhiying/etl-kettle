@@ -1,25 +1,30 @@
 package com.khsh.etl.controller.databuilder;
 
+import com.alibaba.fastjson.TypeReference;
+import com.ejet.comm.PageBean;
+import com.ejet.comm.Param;
+import com.ejet.comm.Result;
+import com.ejet.comm.base.CoBaseController;
 import com.ejet.comm.exception.CoBusinessException;
 import com.khsh.etl.model.EtlDatabaseBuildExtModel;
+import com.khsh.etl.service.impl.EtlDatabaseBuildExtServiceImpl;
+import com.khsh.etl.vo.EtlDatabaseBuildExtVO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.alibaba.fastjson.TypeReference;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import com.ejet.comm.Result;
-import com.ejet.comm.Param;
-import com.ejet.comm.PageBean;
-import com.ejet.comm.base.CoBaseController;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 import static com.ejet.comm.exception.ExceptionCode.SYS_ERROR;
-import com.khsh.etl.vo.EtlDatabaseBuildExtVO;
-import com.khsh.etl.service.impl.EtlDatabaseBuildExtServiceImpl;
+
 @RestController
 @RequestMapping(value="/etl-database-build-ext")
-public class EtlDatabaseBuildExtController extends CoBaseController { 
+public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	private final Logger log = LoggerFactory.getLogger(EtlDatabaseBuildExtController.class);
 	@Autowired
@@ -28,7 +33,7 @@ public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/query")
-	public Result query(@RequestBody(required=false)EtlDatabaseBuildExtVO model) {
+	public Result query(@RequestBody(required=true) EtlDatabaseBuildExtVO model) {
 		Result rs = new Result();
 		try {
 			List<EtlDatabaseBuildExtModel> page = mService.queryByCond(model);
@@ -43,7 +48,7 @@ public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/delete")
-	public Result delete(@RequestBody(required=true)EtlDatabaseBuildExtVO model) {
+	public Result delete(@RequestBody(required=true) EtlDatabaseBuildExtVO model) {
 		Result rs = new Result();
 		try{
 			mService.delete(model);
@@ -57,7 +62,7 @@ public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/add")
-	public Result add(@RequestBody(required=true)EtlDatabaseBuildExtVO model) {
+	public Result add(@RequestBody(required=true) EtlDatabaseBuildExtVO model) {
 		Result rs = new Result();
 		try{
 			mService.insertSingle(model);
@@ -71,7 +76,7 @@ public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/update")
-	public Result update(@RequestBody(required=true)EtlDatabaseBuildExtVO model) {
+	public Result update(@RequestBody(required=true) EtlDatabaseBuildExtVO model) {
 		Result rs = new Result();
 		try{
 			mService.update(model);
@@ -85,7 +90,7 @@ public class EtlDatabaseBuildExtController extends CoBaseController {
 
 	@ResponseBody
 	@RequestMapping(value="/query-by-page")
-	public Result queryByPage(@RequestBody(required=true)Param param, BindingResult bindResult) {
+	public Result queryByPage(@RequestBody(required=true) Param param, BindingResult bindResult) {
 		Result rs = new Result();
 		try{
 			checkBindResult(bindResult);

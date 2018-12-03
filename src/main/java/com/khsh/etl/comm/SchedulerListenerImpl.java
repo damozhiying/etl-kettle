@@ -1,7 +1,6 @@
 package com.khsh.etl.comm;
 
 import org.quartz.*;
-import org.springframework.stereotype.Component;
 
 /**
  * Copyright (C), 2016-2018, 武汉康华数海有限公司

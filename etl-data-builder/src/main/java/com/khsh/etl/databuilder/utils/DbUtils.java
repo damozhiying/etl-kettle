@@ -1,6 +1,8 @@
 package com.khsh.etl.databuilder.utils;
 
 
+import com.ejet.comm.exception.CoBusinessException;
+import com.ejet.comm.exception.ExceptionCode;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -95,7 +97,7 @@ public class DbUtils {
     }
 
     /**
-     * 根据URL地址返回库名信息
+     * 根据URL地址返回库名信息(目前是oracle需要)
      *
      * @param dbURL
      * @return
@@ -165,6 +167,47 @@ public class DbUtils {
     }
 
 
+    public static String getDriverClass(String name) throws CoBusinessException {
+        DbTypeEnum type = DbTypeEnum.getTypeName(name);
+        if(type==null) {
+            throw new CoBusinessException(ExceptionCode.SYS_ERROR, "数据库类型未找到!");
+        }
+        String driverClass = null;
+        switch (type) {
+            case ORACLE:
+                driverClass = "oracle.jdbc.driver.OracleDriver";
+                break;
+            case MYSQL:
+                driverClass = "com.mysql.jdbc.Driver";
+                break;
+            case SQLSERVER:
+                driverClass = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
+                break;
+        }
+        return driverClass;
+    }
+
+
+    public static String getDbUrl(String name, String ip, Integer port, String databaseName) {
+        StringBuffer buffer = new StringBuffer();
+        DbTypeEnum type = DbTypeEnum.getTypeName(name);
+        //String url = "jdbc:mysql://127.0.0.1:3306/etl_kettle?useSSL=false&serverTimezone=UTC";
+        // String jdbcName = "jdbc:mysql";
+        // String param = "?useSSL=false&serverTimezone=UTC";
+        switch (type) {
+            case ORACLE:
+                buffer.append("jdbc:oracle:thin:@").append(ip).append(":").append(port).append(":").append(databaseName);
+                break;
+            case MYSQL:
+                buffer.append("jdbc:mysql://").append(ip).append(":").append(port).append("/").append(databaseName);
+                buffer.append("?useSSL=false&serverTimezone=UTC");
+                break;
+            case SQLSERVER:
+                buffer.append("jdbc:sqlserver://").append(ip).append(":").append(port).append(";databaseName=").append(databaseName);
+                break;
+        }
+        return buffer.toString();
+    }
 
 
 

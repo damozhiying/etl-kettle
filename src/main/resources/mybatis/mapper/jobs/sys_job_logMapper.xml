@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.khsh.etl.mapper.SysJobLogDao">
+
+	<sql id="SqlWhere">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+			<if test="jobId!=null and jobId!='' ">and job_id=#{jobId} </if>
+			<if test="jobName!=null and jobName!='' ">and job_name=#{jobName} </if>
+			<if test="jobStarttime!=null and jobStarttime!='' ">and job_starttime<![CDATA[>=]]>#{jobStarttime}</if>
+			<if test="jobEndtime!=null and jobEndtime!='' ">and job_endtime<![CDATA[<=]]>#{jobEndtime}></if>
+			<if test="jobCosttime!=null ">and job_costtime=#{jobCosttime} </if>
+			<if test="jobState!=null and jobState!='' ">and job_state=#{jobState} </if>
+			<if test="jobResult!=null ">and job_result=#{jobResult} </if>
+			<if test="bussType!=null and bussType!='' ">and buss_type=#{bussType} </if>
+			<if test="bussUuid!=null and bussUuid!='' ">and buss_uuid=#{bussUuid} </if>
+			<if test="bussName!=null and bussName!='' ">and buss_name=#{bussName} </if>
+			<if test="logType!=null ">and log_type=#{logType} </if>
+			<if test="logLevel!=null ">and log_level=#{logLevel} </if>
+			<if test="logSubject!=null and logSubject!='' ">and log_subject=#{logSubject} </if>
+			<if test="logUuidR!=null and logUuidR!='' ">and log_uuid_r=#{logUuidR} </if>
+			<if test="logPath!=null and logPath!='' ">and log_path=#{logPath} </if>
+			<if test="createDay!=null and createDay!='' ">and create_day=#{createDay} </if>
+			<if test="modifyTime!=null and modifyTime!='' ">and modify_time=#{modifyTime} </if>
+			<if test="modifyUser!=null and modifyUser!='' ">and modify_user=#{modifyUser} </if>
+			<if test="ext!=null and ext!='' ">and ext=#{ext} </if>
+			<if test="ext1!=null and ext1!='' ">and ext1=#{ext1} </if>
+			<if test="ext2!=null and ext2!='' ">and ext2=#{ext2} </if>
+			<if test="logDetail!=null and logDetail!='' ">and log_detail=#{logDetail} </if>
+		</where>
+	</sql>
+	<sql id="SqlWherePK">
+		<where>
+			1=1
+			<if test="id!=null ">and id=#{id} </if>
+		</where>
+	</sql>
+	<sql id="SqlSet">
+		<set>
+			<if test="id!=null "> id=#{id}, </if>
+			<if test="jobId!=null and jobId!='' "> job_id=#{jobId}, </if>
+			<if test="jobName!=null and jobName!='' "> job_name=#{jobName}, </if>
+			<if test="jobStarttime!=null and jobStarttime!='' "> job_starttime=#{jobStarttime}, </if>
+			<if test="jobEndtime!=null and jobEndtime!='' "> job_endtime=#{jobEndtime}, </if>
+			<if test="jobCosttime!=null "> job_costtime=#{jobCosttime}, </if>
+			<if test="jobState!=null and jobState!='' "> job_state=#{jobState}, </if>
+			<if test="jobResult!=null "> job_result=#{jobResult}, </if>
+			<if test="bussType!=null and bussType!='' "> buss_type=#{bussType}, </if>
+			<if test="bussUuid!=null and bussUuid!='' "> buss_uuid=#{bussUuid}, </if>
+			<if test="bussName!=null and bussName!='' "> buss_name=#{bussName}, </if>
+			<if test="logType!=null "> log_type=#{logType}, </if>
+			<if test="logLevel!=null "> log_level=#{logLevel}, </if>
+			<if test="logSubject!=null and logSubject!='' "> log_subject=#{logSubject}, </if>
+			<if test="logUuidR!=null and logUuidR!='' "> log_uuid_r=#{logUuidR}, </if>
+			<if test="logPath!=null and logPath!='' "> log_path=#{logPath}, </if>
+			<if test="createDay!=null and createDay!='' "> create_day=#{createDay}, </if>
+			<if test="modifyTime!=null and modifyTime!='' "> modify_time=#{modifyTime}, </if>
+			<if test="modifyUser!=null and modifyUser!='' "> modify_user=#{modifyUser}, </if>
+			<if test="ext!=null and ext!='' "> ext=#{ext}, </if>
+			<if test="ext1!=null and ext1!='' "> ext1=#{ext1}, </if>
+			<if test="ext2!=null and ext2!='' "> ext2=#{ext2}, </if>
+			<if test="logDetail!=null and logDetail!='' "> log_detail=#{logDetail}, </if>
+		</set>
+	</sql>
+
+
+	<insert  id="insertAutoKey" parameterType="com.khsh.etl.model.SysJobLogModel" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		 INSERT INTO sys_job_log (
+ 			job_id, job_name, job_starttime, job_endtime,
+ 			job_costtime, job_state, job_result, buss_type, buss_uuid,
+ 			buss_name, log_type, log_level, log_subject, log_uuid_r,
+ 			log_path, create_day, modify_time, modify_user, ext,
+ 			ext1, ext2, log_detail ) 	 VALUES (
+ 			#{jobId}, #{jobName}, #{jobStarttime}, #{jobEndtime},
+ 			#{jobCosttime}, #{jobState}, #{jobResult}, #{bussType}, #{bussUuid},
+ 			#{bussName}, #{logType}, #{logLevel}, #{logSubject}, #{logUuidR},
+ 			#{logPath}, #{createDay}, #{modifyTime}, #{modifyUser}, #{ext},
+ 			#{ext1}, #{ext2}, #{logDetail} )
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+	</insert>
+
+	<insert  id="insertSingle" parameterType="com.khsh.etl.model.SysJobLogModel" useGeneratedKeys="true" keyProperty="id" >
+		 INSERT INTO sys_job_log (
+ 			job_id, job_name, job_starttime, job_endtime,
+ 			job_costtime, job_state, job_result, buss_type, buss_uuid,
+ 			buss_name, log_type, log_level, log_subject, log_uuid_r,
+ 			log_path, create_day, modify_time, modify_user, ext,
+ 			ext1, ext2, log_detail,  id )
+		 VALUES(
+ 			#{jobId}, #{jobName}, #{jobStarttime}, #{jobEndtime},
+ 			#{jobCosttime}, #{jobState}, #{jobResult}, #{bussType}, #{bussUuid},
+ 			#{bussName}, #{logType}, #{logLevel}, #{logSubject}, #{logUuidR},
+ 			#{logPath}, #{createDay}, #{modifyTime}, #{modifyUser}, #{ext},
+ 			#{ext1}, #{ext2}, #{logDetail},  #{id} )
+
+	</insert>
+
+	<delete  id="delete" parameterType="com.khsh.etl.model.SysJobLogModel" >
+		 DELETE FROM sys_job_log
+		 <include refid="SqlWherePK"></include>
+	</delete>
+
+	<update  id="update" parameterType="com.khsh.etl.model.SysJobLogModel" >
+		 UPDATE sys_job_log
+		 <include refid="SqlSet"></include>
+		 <include refid="SqlWherePK"></include>
+	</update>
+
+	<select  id="findByPK" parameterType="com.khsh.etl.model.SysJobLogModel" resultType="com.khsh.etl.model.SysJobLogModel" >
+		 SELECT * FROM sys_job_log
+		 <include refid="SqlWhere"></include>
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if>
+	</select>
+
+	<select  id="queryByCond" parameterType="com.khsh.etl.model.SysJobLogModel" resultType="com.khsh.etl.model.SysJobLogModel" >
+		 SELECT * FROM sys_job_log
+		 <include refid="SqlWhere"></include>
+		 <if test=" orderCond !=null ">  order by ${orderCond} </if>
+	</select>
+
+
+    <select  id="findMaxId" parameterType="com.khsh.etl.model.SysJobLogModel" resultType="int" >
+        SELECT max(id) FROM sys_job_log
+        <include refid="SqlWhere"></include>
+    </select>
+
+	<select  id="queryByPage" parameterType="com.khsh.etl.vo.SysJobLogVO" resultType="com.khsh.etl.vo.SysJobLogVO" >
+        SELECT
+        case when K.job_name is null then L.job_name else L.job_name end as job_name,
+        case when R.ktl_job_name is null then L.buss_name else L.buss_name end as buss_name,
+        case when R.ktl_job_type is null then L.buss_type else L.buss_type end as buss_type,
+        case when R.uuid is null then L.buss_uuid else L.buss_uuid end as buss_uuid,
+        L.job_id,
+        L.id,
+        L.job_starttime,
+        L.job_endtime,
+        L.job_costtime,
+        L.job_state,
+        L.job_result,
+        L.log_type,
+        L.log_level,
+        L.log_subject,
+        L.log_detail,
+        L.log_uuid_r,
+        L.log_path,
+        L.create_day,
+        L.modify_time,
+        L.modify_user,
+        L.ext,
+        L.ext1,
+        L.ext2
+        FROM sys_job_log L
+        LEFT JOIN sys_job_schedule K
+        ON L.job_id = K.job_id
+        LEFT JOIN etl_kettle_repository R
+        ON L.buss_uuid = R.uuid
+        WHERE 1=1
+        <if test="bussType!=null and bussType!='' ">and L.buss_type=#{bussType} </if>
+        <if test="bussUuid!=null and bussUuid!='' ">and L.buss_uuid=#{bussUuid} </if>
+        <if test="bussName!=null and bussName!='' "> and L.buss_name like CONCAT('%', #{ktlJobName}, '%') </if>
+
+        <if test="jobId!=null and jobId!='' ">and L.job_id like CONCAT('%', #{jobId}, '%') </if>
+        <if test="jobName!=null and jobName!='' ">and L.job_name like CONCAT('%', #{jobName}, '%') </if>
+        <!--<if test="ktlJobName!=null and ktlJobName!='' ">and R.ktl_job_name like CONCAT('%', #{ktlJobName}, '%') </if>-->
+        <if test="jobStarttime!=null and jobStarttime!='' ">and L.job_starttime<![CDATA[>=]]> #{jobStarttime} </if>
+        <if test="jobEndtime!=null and jobEndtime!='' ">and L.job_endtime<![CDATA[<=]]> #{jobEndtime} </if>
+        <if test="jobCosttime!=null ">and L.job_costtime=#{jobCosttime} </if>
+        <if test="jobResult!=null ">and L.job_result=#{jobResult} </if>
+
+        <if test="logType!=null ">and L.log_type=#{logType} </if>
+        <if test="logLevel!=null ">and L.log_level=#{logLevel} </if>
+        <if test="logSubject!=null and logSubject!='' ">and L.log_subject like CONCAT('%', #{logSubject}, '%') </if>
+        <if test="logUuidR!=null and logUuidR!='' ">and L.log_uuid_r=#{logUuidR} </if>
+        <if test="logPath!=null and logPath!='' ">and L.log_path=#{logPath} </if>
+        <if test="createDay!=null and createDay!='' ">and L.create_day=#{createDay} </if>
+        order by L.job_endtime desc
+	</select>
+
+
+    <delete  id="deleteBatch" parameterType="com.khsh.etl.vo.SysJobLogVO" >
+        DELETE FROM sys_job_log
+        where id in
+        <foreach collection="ids" item="item" index="no" open="("
+                 separator="," close=")">
+            #{item.id}
+        </foreach>
+    </delete>
+
+</mapper>
